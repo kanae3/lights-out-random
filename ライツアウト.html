@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ライツアウトパズル</title>
+  <style>
+    .cell {
+      width: 6vw;
+      height: 6vw;
+      max-width: 60px;
+      max-height: 60px;
+      border: 1px solid black;
+      background-color: blue;
+      display: inline-block;
+    }
+    .answercell {
+      width: 4vw;
+      height: 4vw;
+      max-width: 40px;
+      max-height: 40px;
+      border: 1px solid black;
+      background-color: blue;
+      display: inline-block;
+      margin-left: 2vw;
+    }
+    .space {
+      width: 2vw;
+      height: 2vw;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <h1>ライツアウトパズル</h1>
+  
+  <div>
+    <label for="quizSelect">問題の選択:</label>
+    <select id="quizSelect" onclick="changeQuiz()">
+      <option value=0>ランダムOVERLOAD</option>
+      <option value=1>ランダムHARD</option>
+    </select>
+  </div>
+  
+  <div id="gameBoard">
+    <div class="cell" onclick="toggleLights(0, 0)"></div>
+    <div class="cell" onclick="toggleLights(0, 1)"></div>
+    <div class="cell" onclick="toggleLights(0, 2)"></div>
+    <div class="cell" onclick="toggleLights(0, 3)"></div>
+    <div class="space"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <br>
+    <div class="cell" onclick="toggleLights(1, 0)"></div>
+    <div class="cell" onclick="toggleLights(1, 1)"></div>
+    <div class="cell" onclick="toggleLights(1, 2)"></div>
+    <div class="cell" onclick="toggleLights(1, 3)"></div>
+    <div class="space"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <br>
+    <div class="cell" onclick="toggleLights(2, 0)"></div>
+    <div class="cell" onclick="toggleLights(2, 1)"></div>
+    <div class="cell" onclick="toggleLights(2, 2)"></div>
+    <div class="cell" onclick="toggleLights(2, 3)"></div>
+    <div class="space"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <br>
+    <div class="cell" onclick="toggleLights(3, 0)"></div>
+    <div class="cell" onclick="toggleLights(3, 1)"></div>
+    <div class="cell" onclick="toggleLights(3, 2)"></div>
+    <div class="cell" onclick="toggleLights(3, 3)"></div>
+    <div class="space"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+  </div>
+
+  <script>
+    var size = 4;
+    const quiz = [
+      {name: "右下斜め",
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "右上斜め",
+        answergrid: [
+          [false, true, true, true],
+          [true, false, true, true],
+          [true, true, false, true],
+          [true, true, true, false]
+        ]
+      },
+      {name: "円形",
+        answergrid: [
+          [true, true, true, true],
+          [true, false, false, true],
+          [true, false, false, true],
+          [true, true, true, true]
+        ]
+      },
+      {name: "四方形",
+        answergrid: [
+          [false, true, true, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー",
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "横ボーダー",
+        answergrid: [
+          [false, false, false, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, false, false, false]
+        ]
+      },
+      {name: "Default",
+        answergrid: [
+          [true, true, true, true],
+          [true, true, true, true],
+          [true, true, true, true],
+          [true, true, true, true]
+        ]
+      }
+    ];
+
+    const grid= [
+          [false, false, false, false],
+          [false, false, false, false],
+          [false, false, false, false],
+          [false, false, false, false]
+    ];
+    
+    let Quiz = quiz[quiz.length-1];
+
+    function initializeBoard() {
+      const gameBoard = document.getElementById("gameBoard");
+      const cells = gameBoard.getElementsByClassName("cell");
+      const answercells = gameBoard.getElementsByClassName("answercell");
+
+      for (let i = 0; i < cells.length; i++) {
+        const row = Math.floor(i / size);
+        const col = i % size;
+
+        const cell = cells[i];
+        cell.style.backgroundColor = grid[row][col] ? "red" : "blue";
+        cell.style.cursor = "pointer";
+
+        const answercell = answercells[i];
+        answercell.style.backgroundColor = Quiz.answergrid[row][col] ? "red" : "blue";
+      }
+    }
+
+    function toggleLights(row, col) {
+      grid[row][col] = !grid[row][col];
+      if (row > 0) {
+        grid[row - 1][col] = !grid[row - 1][col];
+      }
+      if (row < size - 1) {
+        grid[row + 1][col] = !grid[row + 1][col];
+      }
+      if (col > 0) {
+        grid[row][col-1] = !grid[row][col-1];
+      }
+      if (col < size - 1) {
+        grid[row][col+1] = !grid[row][col+1];
+      }
+      initializeBoard();
+      checkWin();
+    }
+
+    function checkWin() {
+      const gameBoard = document.getElementById("gameBoard");
+      const cells = gameBoard.getElementsByClassName("cell");
+
+      for (let i = 0; i < cells.length; i++) {
+        const row = Math.floor(i / size);
+        const col = i % size;
+
+        if (grid[row][col] !== Quiz.answergrid[row][col]) {
+          return;
+        }
+      }
+      alert("おめでとう！パズルを解きました！");
+    }
+
+    function setgrid(){
+        const cells = gameBoard.getElementsByClassName("cell");
+        for (let i = 0; i < cells.length; i++) {
+            const row = Math.floor(i / size);
+            const col = i % size;
+            grid[row][col] = Quiz.answergrid[row][col];
+        }
+    }
+    function getRandomNumbers(count) {
+      var numbers = [];
+      while (numbers.length < count) {
+        var randomNumber = Math.floor(Math.random() * 16);
+        if (numbers.indexOf(randomNumber) === -1) {
+        // 重複のない数を追加
+          numbers.push(randomNumber);
+        }
+      }
+      return numbers;
+    }
+
+    function changeQuiz() {
+      const selectElement = document.getElementById("quizSelect");
+      const selectedQuiz = selectElement.value;
+      const cells = gameBoard.getElementsByClassName("cell");
+      var count = 4;
+      if (selectedQuiz === "0") {
+        const randomquiz = Math.floor(Math.random() * (quiz.length-1));
+        Quiz = quiz[randomquiz];
+        count = 4;
+      } else if (selectedQuiz === "1") {
+        const randomquiz = Math.floor(Math.random() * (quiz.length-3));
+        Quiz = quiz[randomquiz];
+        count = 3;
+      }
+      
+      for (let i = 0; i < cells.length; i++) {
+          const row = Math.floor(i / size);
+          const col = i % size;
+          grid[row][col] = Quiz.answergrid[row][col];
+      }
+
+      var numbers = getRandomNumbers(count);
+      
+      for (let j = 0; j < count; j++) {
+          let row = Math.floor(numbers[j] / size);
+          let col = numbers[j] % size;
+          console.log((row+1)+"行"+(col+1)+"列");
+          toggleLights(row, col);
+      }
+      console.log("");
+
+      initializeBoard();
+    }
+
+    initializeBoard();
+  </script>
+</body>
+</html>
